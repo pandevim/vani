@@ -14,6 +14,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const fillEl = document.getElementById('fill');
     const timeLeftEl = document.getElementById('time-left');
 
+    function setLoading(isLoading) {
+        if (isLoading) {
+            loadingRing.classList.remove('hidden');
+            iconPath.classList.add('opacity-50');
+        } else {
+            loadingRing.classList.add('hidden');
+            iconPath.classList.remove('opacity-50');
+        }
+    }
+
     // https://oshoworld.com/ashtavakra-maha-geeta-01
     const audioLink = 'https://oshoworld.com/wp-content/uploads/2020/11/Hindi%20Audio/OSHO-Maha_Geeta_01.mp3'
 
@@ -57,6 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
         audioPlayer.currentTime = 0;
         fillEl.style.width = '0%';
         timeLeftEl.textContent = formatTime(audioPlayer.duration);
+        audioPlayer.pause();
         iconPath.setAttribute('d', playPath);
         toggleBtn.setAttribute('data-state', 'play');
         localStorage.removeItem(STORAGE_KEY);
@@ -73,11 +84,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     audioPlayer.addEventListener('pause', () => {
+        setLoading(false);
         iconPath.setAttribute('d', playPath);
         toggleBtn.setAttribute('data-state', 'play');
     });
 
     audioPlayer.addEventListener('ended', () => {
+        setLoading(false);
         iconPath.setAttribute('d', playPath);
         toggleBtn.setAttribute('data-state', 'play');
     });
@@ -109,18 +122,11 @@ document.addEventListener('DOMContentLoaded', () => {
         return `${hourDisplay}${minutes}m left`;
     }
 
-    function setLoading(isLoading) {
-        if (isLoading) {
-            loadingRing.classList.remove('hidden');
-            iconPath.classList.add('opacity-50'); // Dim the icon while loading
-        } else {
-            loadingRing.classList.add('hidden');
-            iconPath.classList.remove('opacity-50');
-        }
-    }
+
 
     const img = document.getElementById("banner");
     const bg = document.getElementById("bg");
+    const currentTrack = document.getElementById("current-track");
     const colorThief = new ColorThief();
 
     function applyGradient() {
@@ -136,6 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     #171717ff 85%
                 )
             `;
+
+            currentTrack.style.backgroundColor = rgbToCss(mixWithGray(base, 0.4).map(c => Math.round(c * 0.7)));
         } catch (e) {
             console.error("Color extraction failed:", e);
         }
