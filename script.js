@@ -8,24 +8,35 @@ const pausePath = "M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.
 document.addEventListener('DOMContentLoaded', () => {
     const audioPlayer = document.getElementById('audio-player-1');
     const toggleBtn = document.getElementById('toggle-btn');
+    const resetBtn = document.getElementById('reset-btn');
     const iconPath = document.getElementById('icon-path');
+    const loadingRing = document.getElementById('loading-ring');
     const fillEl = document.getElementById('fill');
     const timeLeftEl = document.getElementById('time-left');
 
+    // https://oshoworld.com/ashtavakra-maha-geeta-01
     const audioLink = 'https://oshoworld.com/wp-content/uploads/2020/11/Hindi%20Audio/OSHO-Maha_Geeta_01.mp3'
 
     // Use the audio URL as the key so different files save their own times
     const STORAGE_KEY = `audio_progress_${audioLink}`;
 
-    audioPlayer.src = audioLink;
-
-    // --- NEW: Restore playback position ---
-    const savedTime = localStorage.getItem(STORAGE_KEY);
-    if (savedTime) {
-        audioPlayer.currentTime = parseFloat(savedTime);
-    }
+    let audioInitialized = false;
 
     toggleBtn.addEventListener('click', () => {
+        // 2. Lazy Load: Only set source and restore time on the first click
+        if (!audioInitialized) {
+            audioPlayer.src = audioLink;
+
+            // Restore playback position now that src is set
+            const savedTime = localStorage.getItem(STORAGE_KEY);
+            if (savedTime) {
+                // We set this immediately so the player starts at the right spot
+                audioPlayer.currentTime = parseFloat(savedTime);
+            }
+
+            audioInitialized = true;
+        }
+
         const currentState = toggleBtn.getAttribute('data-state');
 
         if (currentState === 'play') {
@@ -37,6 +48,38 @@ document.addEventListener('DOMContentLoaded', () => {
             iconPath.setAttribute('d', playPath);
             toggleBtn.setAttribute('data-state', 'play');
         }
+    });
+
+    resetBtn.addEventListener('click', () => {
+        // If the user clicks reset before ever clicking play, we don't need to do anything
+        if (!audioInitialized) return;
+
+        audioPlayer.currentTime = 0;
+        fillEl.style.width = '0%';
+        timeLeftEl.textContent = formatTime(audioPlayer.duration);
+        iconPath.setAttribute('d', playPath);
+        toggleBtn.setAttribute('data-state', 'play');
+        localStorage.removeItem(STORAGE_KEY);
+    });
+
+    audioPlayer.addEventListener('waiting', () => {
+        setLoading(true);
+    });
+
+    audioPlayer.addEventListener('playing', () => {
+        setLoading(false);
+        iconPath.setAttribute('d', pausePath);
+        toggleBtn.setAttribute('data-state', 'pause');
+    });
+
+    audioPlayer.addEventListener('pause', () => {
+        iconPath.setAttribute('d', playPath);
+        toggleBtn.setAttribute('data-state', 'play');
+    });
+
+    audioPlayer.addEventListener('ended', () => {
+        iconPath.setAttribute('d', playPath);
+        toggleBtn.setAttribute('data-state', 'play');
     });
 
     audioPlayer.addEventListener('timeupdate', () => {
@@ -64,6 +107,16 @@ document.addEventListener('DOMContentLoaded', () => {
         const minutes = Math.floor((seconds % 3600) / 60);
         const hourDisplay = hours > 0 ? `${hours}h ` : '';
         return `${hourDisplay}${minutes}m left`;
+    }
+
+    function setLoading(isLoading) {
+        if (isLoading) {
+            loadingRing.classList.remove('hidden');
+            iconPath.classList.add('opacity-50'); // Dim the icon while loading
+        } else {
+            loadingRing.classList.add('hidden');
+            iconPath.classList.remove('opacity-50');
+        }
     }
 
     const img = document.getElementById("banner");
