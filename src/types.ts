@@ -9,6 +9,7 @@ export interface Track {
 	audioUrl: string;
 
 	currentTime?: number;
+	status?: 'playing' | 'paused' | 'stopped' | 'loading';
 }
 
 export interface AppStore {
