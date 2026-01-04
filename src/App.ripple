@@ -1,6 +1,6 @@
 import { provideStore, initializeStore } from './store.ripple';
 import { PlaylistHeader } from './components/PlaylistHeader.ripple';
-import { TrackList } from './components/TrackList.ripple';
+import { MediaList } from './components/MediaList.ripple';
 import { PlayerBar } from './components/PlayerBar.ripple';
 
 export component App() {
@@ -14,7 +14,7 @@ export component App() {
 	if (store.@isLoaded) {
 		<div class="min-h-screen">
 			<PlaylistHeader themeColor={store.@themeColor} />
-			<TrackList mediaList={store.@mediaList} />
+			<MediaList mediaList={store.@mediaList} />
 			<PlayerBar currentMedia={store.@currentMedia} themeColor={store.@themeColor} />
 		</div>
 	}

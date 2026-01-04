@@ -1,4 +1,3 @@
-import type { Tracked } from 'ripple';
 import type { MediaData } from '../types';
 
 const getTimeLeft = (duration: number, currentTime: number): string => {
@@ -32,7 +31,7 @@ const getProgressWidth = (duration: number, currentTime: number): string => {
 	return `${Math.min(progress, 100)}%`;
 };
 
-export component TrackList({ mediaList }: { mediaList: Tracked<MediaData[]> }) {
+export component MediaList({ mediaList }: { mediaList: MediaData[] }) {
 	<div>
 		for (const item of mediaList) {
 			<div class="px-4 pt-2 pb-1">
@@ -79,7 +78,7 @@ export component TrackList({ mediaList }: { mediaList: Tracked<MediaData[]> }) {
 						}
 					</div>
 					<div class="flex-1 flex justify-end gap-2 items-center">
-						if (item.isPlaying) {
+						if (item.status === 'playing') {
 							<button class="text-gray-400/50">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -102,7 +101,6 @@ export component TrackList({ mediaList }: { mediaList: Tracked<MediaData[]> }) {
 							if (item.status === 'loading') {
 								<svg
 									id="loading-ring"
-									aria-hidden={item.status === 'loading' ? 'true' : 'false'}
 									class="w-8 h-8 text-neutral-tertiary animate-spin fill-brand absolute"
 									viewBox="0 0 100 101"
 									fill="text-[#171717ff]"
