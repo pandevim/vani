@@ -13,8 +13,8 @@ export interface MediaData {
 }
 
 export interface AppStore {
-	mediaList: Tracked<MediaData[]>;
-	isLoaded: Tracked<boolean>;
-	currentMedia: Tracked<MediaData | null>;
-	themeColor: Tracked<[number, number, number][] | null>;
+	mediaList: MediaData[];
+	isLoaded: boolean;
+	currentMedia: MediaData | null;
+	themeColor: [number, number, number][] | null;
 }

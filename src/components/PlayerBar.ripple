@@ -1,6 +1,5 @@
 import { track, effect } from 'ripple';
-import type { Tracked } from 'ripple';
-import type { MediaData } from '../types';
+import type { AppStore } from '../types';
 import { rgbToCss } from '../utils/rgbToCss';
 import { mixWithGray } from '../utils/mixWithGray';
 
@@ -8,8 +7,8 @@ export component PlayerBar({
 	currentMedia,
 	themeColor,
 }: {
-	currentMedia: Tracked<MediaData | null>;
-	themeColor: Tracked<[number, number, number][] | null>;
+	currentMedia: AppStore['currentMedia'];
+	themeColor: AppStore['themeColor'];
 }) {
 	let player = track<HTMLElement>();
 

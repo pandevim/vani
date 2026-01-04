@@ -1,13 +1,9 @@
 import { track, effect } from 'ripple';
-import type { Tracked } from 'ripple';
 import { rgbToCss } from '../utils/rgbToCss';
 import { mixWithGray } from '../utils/mixWithGray';
+import type { AppStore } from '../types';
 
-export component PlaylistHeader({
-	themeColor,
-}: {
-	themeColor: Tracked<[number, number, number][] | null>;
-}) {
+export component PlaylistHeader({ themeColor }: { themeColor: AppStore['themeColor'] }) {
 	let bg = track<HTMLElement>();
 
 	effect(() => {
