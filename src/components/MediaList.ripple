@@ -1,36 +1,5 @@
 import type { MediaData } from '../types';
 
-const getTimeLeft = (duration: number, currentTime: number): string => {
-	if (!duration || duration <= 0) return 'Loading...';
-
-	const timeLeft = Math.max(0, duration - currentTime);
-
-	if (timeLeft < 60 && timeLeft > 0) {
-		return `${Math.floor(timeLeft)}s left`;
-	}
-
-	if (timeLeft === 0) return 'Finished';
-
-	const hours = Math.floor(timeLeft / 3600);
-	const minutes = Math.floor((timeLeft % 3600) / 60);
-
-	const hourDisplay =
-		hours > 0 ? `${hours}h ` : '';
-
-	const minuteDisplay = `${minutes}m`;
-	const suffixDisplay =
-		currentTime > 0 ? ' left' : '';
-
-	return `${hourDisplay}${minuteDisplay}${suffixDisplay}`;
-};
-
-const getProgressWidth = (duration: number, currentTime: number): string => {
-	if (!duration || duration <= 0) return '0%';
-
-	const progress = (currentTime / duration) * 100;
-	return `${Math.min(progress, 100)}%`;
-};
-
 export component MediaList({ mediaList }: { mediaList: MediaData[] }) {
 	<div>
 		for (const item of mediaList) {
@@ -57,7 +26,9 @@ export component MediaList({ mediaList }: { mediaList: MediaData[] }) {
 						<span class="text-sm text-gray-400 font-medium">{item.artist}</span>
 					</div>
 				</div>
-				<audio id="audio-player-1" />
+				<audio controls>
+					<source src={item.audioUrl} type="audio/mpeg" />
+				</audio>
 				<div class="flex justify-between items-center">
 					<div class="flex justify-start items-center gap-2">
 						<span id="time-left" class="text-xs text-white font-semibold">
@@ -78,7 +49,7 @@ export component MediaList({ mediaList }: { mediaList: MediaData[] }) {
 						}
 					</div>
 					<div class="flex-1 flex justify-end gap-2 items-center">
-						if (item.status === 'playing') {
+						if (item.currentTime) {
 							<button class="text-gray-400/50">
 								<svg
 									xmlns="http://www.w3.org/2000/svg"
@@ -116,20 +87,35 @@ export component MediaList({ mediaList }: { mediaList: MediaData[] }) {
 									/>
 								</svg>
 							}
-
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="currentColor"
-								class="size-8"
-							>
-								<path
-									id="icon-path"
-									fill-rule="evenodd"
-									d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm14.024-.983a1.125 1.125 0 0 1 0 1.966l-5.603 3.113A1.125 1.125 0 0 1 9 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113Z"
-									clip-rule="evenodd"
-								/>
-							</svg>
+							if (item.status === 'playing') {
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="currentColor"
+									class="size-8"
+								>
+									<path
+										id="icon-path"
+										fill-rule="evenodd"
+										d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm14.024-.983a1.125 1.125 0 0 1 0 1.966l-5.603 3.113A1.125 1.125 0 0 1 9 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113Z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+							}
+							if (item.status === 'paused') {
+								<svg
+									xmlns="http://www.w3.org/2000/svg"
+									viewBox="0 0 24 24"
+									fill="currentColor"
+									class="size-8"
+								>
+									<path
+										fill-rule="evenodd"
+										d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM9 8.25a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75h.75a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75H9Zm5.25 0a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75H15a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75h-.75Z"
+										clip-rule="evenodd"
+									/>
+								</svg>
+							}
 						</button>
 					</div>
 				</div>
@@ -139,3 +125,34 @@ export component MediaList({ mediaList }: { mediaList: MediaData[] }) {
 		}
 	</div>
 }
+
+const getTimeLeft = (duration: number, currentTime: number): string => {
+	if (!duration || duration <= 0) return 'Loading...';
+
+	const timeLeft = Math.max(0, duration - currentTime);
+
+	if (timeLeft < 60 && timeLeft > 0) {
+		return `${Math.floor(timeLeft)}s left`;
+	}
+
+	if (timeLeft === 0) return 'Finished';
+
+	const hours = Math.floor(timeLeft / 3600);
+	const minutes = Math.floor((timeLeft % 3600) / 60);
+
+	const hourDisplay =
+		hours > 0 ? `${hours}h ` : '';
+
+	const minuteDisplay = `${minutes}m`;
+	const suffixDisplay =
+		currentTime > 0 ? ' left' : '';
+
+	return `${hourDisplay}${minuteDisplay}${suffixDisplay}`;
+};
+
+const getProgressWidth = (duration: number, currentTime: number): string => {
+	if (!duration || duration <= 0) return '0%';
+
+	const progress = (currentTime / duration) * 100;
+	return `${Math.min(progress, 100)}%`;
+};
