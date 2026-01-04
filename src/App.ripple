@@ -1,15 +1,17 @@
 import { provideStore, initializeStore } from './store.ripple';
+import { PlaylistHeader } from './components/PlaylistHeader.ripple';
 
 export component App() {
 	const store = provideStore();
 
 	initializeStore();
 
-	<div class="min-h-screen">
-		if (!store.@isLoaded) {
-			<p>{'Loading tracks...'}</p>
-		} else {
-			<div>{JSON.stringify(store.@list, null, 2)}</div>
-		}
+	if (!store.@isLoaded) {
+		<p>{'Loading tracks...'}</p>
+	}
+
+	<div class="bg-[#171717ff] text-white min-h-screen">
+		<PlaylistHeader />
+		<div>{JSON.stringify(store.@list, null, 2)}</div>
 	</div>
 }

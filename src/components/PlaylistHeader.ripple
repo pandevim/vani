@@ -1,3 +1,130 @@
+import { track, effect } from 'ripple';
+import ColorThief from 'colorthief';
+
+const rgbToCss = (rgb: number[]) => `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
+const mixWithGray = (rgb: number[], amount = 0.35) => rgb.map(
+	(c) => Math.round(c * (1 - amount) + 128 * amount),
+);
+
 export component PlaylistHeader() {
-	<div />
+	let bg = track();
+	const bgRef = (node) => {
+		@bg = node;
+		return () => (@bg = undefined);
+	};
+
+	let img = track();
+	const imgRef = (node) => {
+		@img = node;
+		return () => (@img = undefined);
+	};
+
+	effect(() => {
+		if (!@bg || !@img) return;
+
+		const colorThief = new ColorThief();
+
+		const applyGradient = () => {
+			try {
+				const palette = colorThief.getPalette(@img, 5);
+				const base = palette[1] || palette[0];
+				const muted = mixWithGray(base);
+
+				@bg.style.backgroundImage =
+					`
+                linear-gradient(
+                    180deg,
+                    ${rgbToCss(
+						muted,
+					)} 0%,
+                    #171717ff 85%
+                )
+            `;
+			} catch (e) {
+				console.error('Color extraction failed:', e);
+			}
+		};
+
+		if (@img.complete && @img.naturalWidth !== 0) {
+			applyGradient();
+		} else {
+			@img.addEventListener('load', applyGradient);
+			return () => @img.removeEventListener('load', applyGradient);
+		}
+	});
+
+	<div {ref bgRef} class="pt-8">
+		<div class="flex justify-center">
+			<img
+				{ref imgRef}
+				src="/images/osho-banner.jpg"
+				alt="osho_banner"
+				crossorigin="anonymous"
+				class="size-64 rounded-sm shadow-2xl/60"
+			/>
+		</div>
+
+		<div class="flex justify-start p-4 pb-1">
+			<h1 class="text-2xl text-white font-semibold">{'Osho Maha Geeta 01-91'}</h1>
+		</div>
+
+		<div class="flex items-center gap-1 px-4 text-xs text-gray-500 font-bold">
+			<span>{'Playlist'}</span>
+			<span>{'•'}</span>
+			<span>{'145h 49m'}</span>
+		</div>
+
+		<div class="flex justify-between items-center px-4">
+			<div class="flex justify-start gap-4">
+				<button class="text-gray-400">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="size-6"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="m9 12.75 3 3m0 0 3-3m-3 3v-7.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+						/>
+					</svg>
+				</button>
+				<button class="text-gray-400">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="size-6"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186 9.566-5.314m-9.566 7.5 9.566 5.314m0 0a2.25 2.25 0 1 0 3.935 2.186 2.25 2.25 0 0 0-3.935-2.186Zm0-12.814a2.25 2.25 0 1 0 3.933-2.185 2.25 2.25 0 0 0-3.933 2.185Z"
+						/>
+					</svg>
+				</button>
+			</div>
+			<div class="flex-1 flex justify-end">
+				<button class="text-green-500">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						viewBox="0 0 24 24"
+						fill="currentColor"
+						class="size-14"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm14.024-.983a1.125 1.125 0 0 1 0 1.966l-5.603 3.113A1.125 1.125 0 0 1 9 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113Z"
+							clip-rule="evenodd"
+						/>
+					</svg>
+				</button>
+			</div>
+		</div>
+	</div>
 }
