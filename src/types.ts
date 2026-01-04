@@ -4,10 +4,11 @@ export interface Track {
 	id: string;
 	title: string;
 	artist: string;
-	duration: string;
+	duration: number; // duration in seconds
 	redirectUrl: string;
 	audioUrl: string;
-	timeLength?: string;
+
+	currentTime?: number;
 }
 
 export interface AppStore {

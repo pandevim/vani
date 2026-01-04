@@ -1,6 +1,28 @@
 import type { Tracked } from 'ripple';
 import type { Track } from '../types';
 
+const getTimeLeft = (duration: number, currentTime: number): string => {
+	if (!duration || duration <= 0) return 'Loading...';
+
+	const timeLeft = Math.max(0, duration - currentTime);
+
+	if (timeLeft < 60 && timeLeft > 0) {
+		return `${Math.floor(timeLeft)}s left`;
+	}
+
+	if (timeLeft === 0) return 'Finished';
+
+	const hours = Math.floor(timeLeft / 3600);
+	const minutes = Math.floor((timeLeft % 3600) / 60);
+
+	const hourDisplay =
+		hours > 0 ? `${hours}h ` : '';
+
+	const minuteDisplay = `${minutes}m`;
+
+	return `${hourDisplay}${minuteDisplay} left`;
+};
+
 export component TrackList({ list }: { list: Tracked<Track[]> }) {
 	<div>
 		for (const item of list) {
@@ -31,7 +53,7 @@ export component TrackList({ list }: { list: Tracked<Track[]> }) {
 				<div class="flex justify-between items-center">
 					<div class="flex justify-start items-center gap-2">
 						<span id="time-left" class="text-xs text-white font-semibold">
-							{item.duration}
+							{getTimeLeft(item.duration, item.currentTime ?? 0)}
 						</span>
 						<div id="bar" class="w-24 h-1 bg-gray-400/20 rounded-full">
 							<div id="fill" class="h-1 w-0 bg-green-500 rounded-full" />
