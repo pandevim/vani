@@ -1,33 +1,33 @@
 import { track, effect } from 'ripple';
 import type { Tracked } from 'ripple';
-import type { Track } from '../types';
+import type { MediaData } from '../types';
 import { rgbToCss } from '../utils/rgbToCss';
 import { mixWithGray } from '../utils/mixWithGray';
 
 export component PlayerBar({
-	track,
+	currentMedia,
 	themeColor,
 }: {
-	track: Tracked<Track | null>;
+	currentMedia: Tracked<MediaData | null>;
 	themeColor: Tracked<[number, number, number][] | null>;
 }) {
-	let currentTrack = track<HTMLElement>();
+	let player = track<HTMLElement>();
 
 	effect(() => {
-		if (!@currentTrack || !@themeColor) return;
+		if (!@player || !@themeColor) return;
 
-		@currentTrack.style.backgroundColor = rgbToCss(
+		@player.style.backgroundColor = rgbToCss(
 			mixWithGray(@themeColor, 0.4).map((c) => Math.round(c * 0.7)),
 		);
 	});
 
-	if (!@track) {
+	if (!@currentMedia) {
 		<div />
 	} else {
 		<div
 			{ref (node) => {
-				@currentTrack = node;
-				return () => (@currentTrack = undefined);
+				@player = node;
+				return () => (@player = undefined);
 			}}
 			class="m-2 fixed bottom-0 left-0 right-0 rounded-md text-white z-50"
 		>
@@ -50,8 +50,8 @@ export component PlayerBar({
 						</svg>
 					</div>
 					<div class="flex-1 flex flex-col">
-						<span class="text-md font-semibold">{track?.title ?? 'Unknown'}</span>
-						<span class="text-sm font-medium">{track?.artist ?? 'Unknown'}</span>
+						<span class="text-md font-semibold">{currentMedia.title}</span>
+						<span class="text-sm font-medium">{currentMedia.artist}</span>
 					</div>
 				</div>
 				<div class="flex items-center px-2">

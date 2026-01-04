@@ -14,8 +14,8 @@ export component App() {
 	if (store.@isLoaded) {
 		<div class="min-h-screen">
 			<PlaylistHeader themeColor={store.@themeColor} />
-			<TrackList list={store.@list} />
-			<PlayerBar track={store.@currentTrack} themeColor={store.@themeColor} />
+			<TrackList mediaList={store.@mediaList} />
+			<PlayerBar currentMedia={store.@currentMedia} themeColor={store.@themeColor} />
 		</div>
 	}
 }

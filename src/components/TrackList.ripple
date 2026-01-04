@@ -1,5 +1,5 @@
 import type { Tracked } from 'ripple';
-import type { Track } from '../types';
+import type { MediaData } from '../types';
 
 const getTimeLeft = (duration: number, currentTime: number): string => {
 	if (!duration || duration <= 0) return 'Loading...';
@@ -32,9 +32,9 @@ const getProgressWidth = (duration: number, currentTime: number): string => {
 	return `${Math.min(progress, 100)}%`;
 };
 
-export component TrackList({ list }: { list: Tracked<Track[]> }) {
+export component TrackList({ mediaList }: { mediaList: Tracked<MediaData[]> }) {
 	<div>
-		for (const item of list) {
+		for (const item of mediaList) {
 			<div class="px-4 pt-2 pb-1">
 				<div class="flex justify-start items-center gap-2">
 					<div

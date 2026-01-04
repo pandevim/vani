@@ -10,9 +10,9 @@ const STORAGE_KEY = 'app_tracks_cache';
 export function provideStore() {
 	TrackContext.set<AppStore>(
 		{
-			list: track([]),
+			mediaList: track([]),
 			isLoaded: track(false),
-			currentTrack: track(null),
+			currentMedia: track(null),
 			themeColor: track(null),
 		},
 	);
@@ -39,7 +39,7 @@ export async function initializeStore() {
 
 	if (cached) {
 		try {
-			store.@list = JSON.parse(cached);
+			store.@mediaList = JSON.parse(cached);
 			store.@isLoaded = true;
 			return;
 		} catch (e) {
@@ -48,7 +48,7 @@ export async function initializeStore() {
 	}
 
 	try {
-		store.@list = data;
+		store.@mediaList = data;
 		store.@isLoaded = true;
 
 		localStorage.setItem(STORAGE_KEY, JSON.stringify(data));

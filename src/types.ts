@@ -1,6 +1,6 @@
 import { Tracked } from 'ripple';
 
-export interface Track {
+export interface MediaData {
 	id: string;
 	title: string;
 	artist: string;
@@ -13,8 +13,8 @@ export interface Track {
 }
 
 export interface AppStore {
-	list: Tracked<Track[]>;
+	mediaList: Tracked<MediaData[]>;
 	isLoaded: Tracked<boolean>;
-	currentTrack: Tracked<Track | null>;
+	currentMedia: Tracked<MediaData | null>;
 	themeColor: Tracked<[number, number, number][] | null>;
 }
