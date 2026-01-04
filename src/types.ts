@@ -16,4 +16,5 @@ export interface AppStore {
 	list: Tracked<Track[]>;
 	isLoaded: Tracked<boolean>;
 	currentTrack: Tracked<Track | null>;
+	themeColor: Tracked<[number, number, number][] | null>;
 }

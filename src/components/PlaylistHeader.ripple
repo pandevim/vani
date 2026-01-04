@@ -1,62 +1,39 @@
 import { track, effect } from 'ripple';
-import ColorThief from 'colorthief';
+import type { Tracked } from 'ripple';
+import { rgbToCss } from '../utils/rgbToCss';
+import { mixWithGray } from '../utils/mixWithGray';
 
-const rgbToCss = (rgb: number[]) => `rgb(${rgb[0]}, ${rgb[1]}, ${rgb[2]})`;
-const mixWithGray = (rgb: number[], amount = 0.35) => rgb.map(
-	(c) => Math.round(c * (1 - amount) + 128 * amount),
-);
-
-export component PlaylistHeader() {
-	let bg = track();
-	const bgRef = (node) => {
-		@bg = node;
-		return () => (@bg = undefined);
-	};
-
-	let img = track();
-	const imgRef = (node) => {
-		@img = node;
-		return () => (@img = undefined);
-	};
+export component PlaylistHeader({
+	themeColor,
+}: {
+	themeColor: Tracked<[number, number, number][] | null>;
+}) {
+	let bg = track<HTMLElement>();
 
 	effect(() => {
-		if (!@bg || !@img) return;
+		if (!@bg || !@themeColor) return;
 
-		const colorThief = new ColorThief();
-
-		const applyGradient = () => {
-			try {
-				const palette = colorThief.getPalette(@img, 5);
-				const base = palette[1] || palette[0];
-				const muted = mixWithGray(base);
-
-				@bg.style.backgroundImage =
-					`
+		@bg.style.backgroundImage =
+			`
                 linear-gradient(
                     180deg,
                     ${rgbToCss(
-						muted,
-					)} 0%,
+				mixWithGray(@themeColor),
+			)} 0%,
                     #171717ff 85%
                 )
             `;
-			} catch (e) {
-				console.error('Color extraction failed:', e);
-			}
-		};
-
-		if (@img.complete && @img.naturalWidth !== 0) {
-			applyGradient();
-		} else {
-			@img.addEventListener('load', applyGradient);
-			return () => @img.removeEventListener('load', applyGradient);
-		}
 	});
 
-	<div {ref bgRef} class="pt-8">
+	<div
+		{ref (node) => {
+			@bg = node;
+			return () => (@bg = undefined);
+		}}
+		class="pt-8"
+	>
 		<div class="flex justify-center">
 			<img
-				{ref imgRef}
 				src="/images/osho-banner.jpg"
 				alt="osho_banner"
 				crossorigin="anonymous"

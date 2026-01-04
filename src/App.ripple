@@ -5,16 +5,17 @@ import { PlayerBar } from './components/PlayerBar.ripple';
 
 export component App() {
 	const store = provideStore();
-
 	initializeStore();
 
 	if (!store.@isLoaded) {
 		<p>{'Loading tracks...'}</p>
-	} else {
+	}
+
+	if (store.@isLoaded) {
 		<div class="min-h-screen">
-			<PlaylistHeader />
+			<PlaylistHeader themeColor={store.@themeColor} />
 			<TrackList list={store.@list} />
-			<PlayerBar track={store.@currentTrack} />
+			<PlayerBar track={store.@currentTrack} themeColor={store.@themeColor} />
 		</div>
 	}
 }
