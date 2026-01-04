@@ -1,3 +1,54 @@
-export component PlayerBar() {
-	<div />
+import type { Track } from '../types/Track';
+
+export component PlayerBar({ track }: { track: Track | null }) {
+	if (!track) {
+		<div />
+	} else {
+		<div class="m-2 fixed bottom-0 left-0 right-0 rounded-md text-white z-50">
+			<div class="flex justify-between items-center p-2">
+				<div class="flex justify-start items-center gap-2">
+					<div
+						class="p-4 rounded-md bg-gray-400/50 flex items-center justify-center shadow-lg"
+					>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="currentColor"
+							class="size-3"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M19.952 1.651a.75.75 0 0 1 .298.599V16.303a3 3 0 0 1-2.176 2.884l-1.32.377a2.553 2.553 0 1 1-1.403-4.909l2.311-.66a1.5 1.5 0 0 0 1.088-1.442V6.994l-9 2.572v9.737a3 3 0 0 1-2.176 2.884l-1.32.377a2.553 2.553 0 1 1-1.402-4.909l2.31-.66a1.5 1.5 0 0 0 1.088-1.442V5.25a.75.75 0 0 1 .544-.721l10.5-3a.75.75 0 0 1 .658.122Z"
+								clip-rule="evenodd"
+							/>
+						</svg>
+					</div>
+					<div class="flex-1 flex flex-col">
+						<span class="text-md font-semibold">{track.title}</span>
+						<span class="text-sm font-medium">{track.artist}</span>
+					</div>
+				</div>
+				<div class="flex items-center">
+					<button class="text-white" data-state="play">
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							viewBox="0 0 24 24"
+							fill="currentColor"
+							class="size-6"
+						>
+							<path
+								fill-rule="evenodd"
+								d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+								clip-rule="evenodd"
+							/>
+						</svg>
+					</button>
+				</div>
+			</div>
+
+			<div class="h-[2px] bg-white/20 mx-2">
+				<div class="h-[2px] bg-white/50 rounded-full w-[30%]" />
+			</div>
+		</div>
+	}
 }

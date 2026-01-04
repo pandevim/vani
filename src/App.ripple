@@ -1,5 +1,7 @@
 import { provideStore, initializeStore } from './store.ripple';
 import { PlaylistHeader } from './components/PlaylistHeader.ripple';
+import { TrackList } from './components/TrackList.ripple';
+import { PlayerBar } from './components/PlayerBar.ripple';
 
 export component App() {
 	const store = provideStore();
@@ -8,10 +10,11 @@ export component App() {
 
 	if (!store.@isLoaded) {
 		<p>{'Loading tracks...'}</p>
+	} else {
+		<div class="min-h-screen">
+			<PlaylistHeader />
+			<TrackList list={store.@list} />
+			<PlayerBar track={store.@currentTrack} />
+		</div>
 	}
-
-	<div class="bg-[#171717ff] text-white min-h-screen">
-		<PlaylistHeader />
-		<div>{JSON.stringify(store.@list, null, 2)}</div>
-	</div>
 }

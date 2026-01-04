@@ -5,9 +5,9 @@ export interface Track {
 	title: string;
 	artist: string;
 	duration: string;
-	timeLeft?: string;
 	redirectUrl: string;
 	audioUrl: string;
+	timeLength?: string;
 }
 
 export interface AppStore {
