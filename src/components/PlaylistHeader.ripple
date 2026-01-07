@@ -1,20 +1,20 @@
 import { track, effect } from 'ripple';
 import { rgbToCss } from '../utils/rgbToCss';
 import { mixWithGray } from '../utils/mixWithGray';
-import type { AppStore } from '../types';
+import { context } from '../context.ripple';
 
-export component PlaylistHeader({ themeColor }: { themeColor: AppStore['themeColor'] }) {
+export component PlaylistHeader() {
+	const store = context.get();
 	let bg = track<HTMLElement>();
 
 	effect(() => {
-		if (!@bg || !@themeColor) return;
-
+		if (!@bg || !store.@themeColor) return;
 		@bg.style.backgroundImage =
 			`
                 linear-gradient(
                     180deg,
                     ${rgbToCss(
-				mixWithGray(@themeColor),
+				mixWithGray(store.@themeColor),
 			)} 0%,
                     #171717ff 85%
                 )

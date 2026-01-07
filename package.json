@@ -33,6 +33,7 @@
   "dependencies": {
     "clsx": "^2.1.1",
     "colorthief": "^2.6.0",
+    "lodash": "^4.17.21",
     "ripple": "latest",
     "tailwind-merge": "^3.4.0"
   },

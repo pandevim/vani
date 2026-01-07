@@ -1,5 +1,3 @@
-import { Tracked } from 'ripple';
-
 export interface MediaData {
 	id: string;
 	title: string;
@@ -16,5 +14,5 @@ export interface AppStore {
 	mediaList: MediaData[];
 	isLoaded: boolean;
 	currentMedia: MediaData | null;
-	themeColor: [number, number, number][] | null;
+	themeColor: [number, number, number];
 }

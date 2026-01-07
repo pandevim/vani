@@ -1,0 +1,143 @@
+import { Context, track } from 'ripple';
+import type { AppStore } from './types';
+import ColorThief from 'colorthief';
+// import data from './data/tracks.json';
+
+export const context = new Context<AppStore>();
+
+// const STORAGE_KEY = 'app_tracks_cache';
+
+// export async function initializeStore() {
+// 	const store = TrackContext.get();
+// 	if (!store) return;
+
+// 	const cached = localStorage.getItem(STORAGE_KEY);
+
+// 	if (cached) {
+// 		try {
+// 			store.@mediaList = JSON.parse(cached);
+// 			store.@isLoaded = true;
+// 			return;
+// 		} catch (e) {
+// 			console.error('Cache corrupt, refetching...');
+// 		}
+// 	}
+
+// 	try {
+// 		store.@mediaList = data;
+// 		store.@isLoaded = true;
+
+// 		localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+// 	} catch (err) {
+// 		console.error('Failed to load tracks', err);
+// 	}
+// }
+
+export async function initialize() {
+	const store = #{
+		mediaList: #[
+			#{
+				id: '1',
+				title: 'Ashtavakra Geeta 01',
+				artist: 'Osho',
+				duration: 5974,
+				redirectUrl: 'https://oshoworld.com/ashtavakra-maha-geeta-01',
+				audioUrl: 'https://oshoworld.com/wp-content/uploads/2020/11/Hindi%20Audio/OSHO-Maha_Geeta_01.mp3',
+			},
+			#{
+				id: '2',
+				title: 'Ashtavakra Geeta 02',
+				artist: 'Osho',
+				duration: 6391,
+				redirectUrl: 'https://oshoworld.com/ashtavakra-maha-geeta-02',
+				audioUrl: 'https://oshoworld.com/wp-content/uploads/2020/11/Hindi%20Audio/OSHO-Maha_Geeta_02.mp3',
+			},
+			#{
+				id: '3',
+				title: 'Ashtavakra Geeta 03',
+				artist: 'Osho',
+				duration: 5675,
+				redirectUrl: 'https://oshoworld.com/ashtavakra-maha-geeta-03',
+				audioUrl: 'https://oshoworld.com/wp-content/uploads/2020/11/Hindi%20Audio/OSHO-Maha_Geeta_03.mp3',
+			},
+			#{
+				id: '4',
+				title: 'Ashtavakra Geeta 04',
+				artist: 'Osho',
+				duration: 5627,
+				redirectUrl: 'https://oshoworld.com/ashtavakra-maha-geeta-04',
+				audioUrl: 'https://oshoworld.com/wp-content/uploads/2020/11/Hindi%20Audio/OSHO-Maha_Geeta_04.mp3',
+			},
+			#{
+				id: '5',
+				title: 'Ashtavakra Geeta 05',
+				artist: 'Osho',
+				duration: 6212,
+				redirectUrl: 'https://oshoworld.com/ashtavakra-maha-geeta-05',
+				audioUrl: 'https://oshoworld.com/wp-content/uploads/2020/11/Hindi%20Audio/OSHO-Maha_Geeta_05.mp3',
+			},
+			#{
+				id: '6',
+				title: 'Ashtavakra Geeta 06',
+				artist: 'Osho',
+				duration: 5959,
+				redirectUrl: 'https://oshoworld.com/ashtavakra-maha-geeta-06',
+				audioUrl: 'https://oshoworld.com/wp-content/uploads/2020/11/Hindi%20Audio/OSHO-Maha_Geeta_06.mp3',
+			},
+			#{
+				id: '7',
+				title: 'Ashtavakra Geeta 07',
+				artist: 'Osho',
+				duration: 5379,
+				redirectUrl: 'https://oshoworld.com/ashtavakra-maha-geeta-07',
+				audioUrl: 'https://oshoworld.com/wp-content/uploads/2020/11/Hindi%20Audio/OSHO-Maha_Geeta_07.mp3',
+			},
+			#{
+				id: '8',
+				title: 'Ashtavakra Geeta 08',
+				artist: 'Osho',
+				duration: 5037,
+				redirectUrl: 'https://oshoworld.com/ashtavakra-maha-geeta-08',
+				audioUrl: 'https://oshoworld.com/wp-content/uploads/2020/11/Hindi%20Audio/OSHO-Maha_Geeta_08.mp3',
+			},
+			#{
+				id: '9',
+				title: 'Ashtavakra Geeta 09',
+				artist: 'Osho',
+				duration: 5325,
+				redirectUrl: 'https://oshoworld.com/ashtavakra-maha-geeta-09',
+				audioUrl: 'https://oshoworld.com/wp-content/uploads/2020/11/Hindi%20Audio/OSHO-Maha_Geeta_09.mp3',
+			},
+			#{
+				id: '10',
+				title: 'Ashtavakra Geeta 10',
+				artist: 'Osho',
+				duration: 5221,
+				redirectUrl: 'https://oshoworld.com/ashtavakra-maha-geeta-10',
+				audioUrl: 'https://oshoworld.com/wp-content/uploads/2020/11/Hindi%20Audio/OSHO-Maha_Geeta_10.mp3',
+			},
+		],
+		isLoaded: track(true),
+		currentMedia: #{
+			id: '2',
+			title: 'Ashtavakra Geeta 02',
+			artist: 'Osho',
+			duration: 6391,
+			redirectUrl: 'https://oshoworld.com/ashtavakra-maha-geeta-02',
+			audioUrl: 'https://oshoworld.com/wp-content/uploads/2020/11/Hindi%20Audio/OSHO-Maha_Geeta_02.mp3',
+		},
+		themeColor: #[23, 23, 23],
+	};
+
+	context.set<AppStore>(store);
+
+	const colorThief = new ColorThief();
+	const img = new Image();
+	img.crossOrigin = 'Anonymous';
+	img.onload = () => {
+		const palette: [number, number, number][] = colorThief.getPalette(img, 5);
+		store.themeColor = palette[1] || palette[0];
+	};
+
+	img.src = '/images/osho-banner.jpg';
+}

@@ -2,31 +2,32 @@ import { track, effect } from 'ripple';
 import type { AppStore } from '../types';
 import { rgbToCss } from '../utils/rgbToCss';
 import { mixWithGray } from '../utils/mixWithGray';
+import { has, isNil } from 'lodash';
+import { context } from '../context.ripple';
 
-export component PlayerBar({
-	currentMedia,
-	themeColor,
-}: {
-	currentMedia: AppStore['currentMedia'];
-	themeColor: AppStore['themeColor'];
-}) {
-	let player = track<HTMLElement>();
+export component MiniPlayer() {
+	const store = context.get();
+	const media = store.@currentMedia;
+
+	let miniPlayer = track<HTMLElement>();
 
 	effect(() => {
-		if (!@player || !@themeColor) return;
+		if (!@miniPlayer || !store.@themeColor) return;
 
-		@player.style.backgroundColor = rgbToCss(
-			mixWithGray(@themeColor, 0.4).map((c) => Math.round(c * 0.7)),
+		@miniPlayer.style.backgroundColor = rgbToCss(
+			mixWithGray(store.@themeColor, 0.4).map((c) => Math.round(c * 0.7)),
 		);
 	});
 
-	if (!@currentMedia) {
+	if (isNil(@media)) {
 		<div />
-	} else {
+	}
+
+	if (has(@media, 'id')) {
 		<div
 			{ref (node) => {
-				@player = node;
-				return () => (@player = undefined);
+				@miniPlayer = node;
+				return () => (@miniPlayer = undefined);
 			}}
 			class="m-2 fixed bottom-0 left-0 right-0 rounded-md text-white z-50"
 		>
@@ -49,8 +50,8 @@ export component PlayerBar({
 						</svg>
 					</div>
 					<div class="flex-1 flex flex-col">
-						<span class="text-md font-semibold">{currentMedia.title}</span>
-						<span class="text-sm font-medium">{currentMedia.artist}</span>
+						<span class="text-md font-semibold">{@media.title}</span>
+						<span class="text-sm font-medium">{@media.artist}</span>
 					</div>
 				</div>
 				<div class="flex items-center px-2">

@@ -1,11 +1,11 @@
-import { provideStore, initializeStore } from './store.ripple';
 import { PlaylistHeader } from './components/PlaylistHeader.ripple';
-import { MediaList } from './components/MediaList.ripple';
-import { PlayerBar } from './components/PlayerBar.ripple';
+import { MediaList } from './components/MediaList/MediaList.ripple';
+import { MiniPlayer } from './components/MiniPlayer.ripple';
+import { context, initialize } from './context.ripple';
 
 export component App() {
-	const store = provideStore();
-	initializeStore();
+	initialize();
+	const store = context.get();
 
 	if (!store.@isLoaded) {
 		<p>{'Loading tracks...'}</p>
@@ -13,9 +13,9 @@ export component App() {
 
 	if (store.@isLoaded) {
 		<div class="min-h-screen">
-			<PlaylistHeader themeColor={store.@themeColor} />
-			<MediaList mediaList={store.@mediaList} />
-			<PlayerBar currentMedia={store.@currentMedia} themeColor={store.@themeColor} />
+			<PlaylistHeader />
+			<MediaList />
+			<MiniPlayer />
 		</div>
 	}
 }
