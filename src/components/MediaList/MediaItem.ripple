@@ -3,6 +3,7 @@ import { trackSplit, track } from 'ripple';
 import { isNumber, isUndefined } from 'lodash';
 import { cn } from '../../utils/cn';
 import { context } from '../../context.ripple';
+import { effect } from 'ripple';
 
 export component MediaItem(props: { item: MediaData }) {
 	const [item] = trackSplit(props, ['item']);
@@ -11,6 +12,14 @@ export component MediaItem(props: { item: MediaData }) {
 	const progressWidth = track(() => getProgressWidth(@item.duration, @item.currentTime ?? 0));
 
 	const store = context.get();
+
+	effect(() => {
+		if (
+			store.currentMediaId && store.currentMediaId !== @item.id && @item.status === 'playing'
+		) {
+			@audio?.pause();
+		}
+	});
 
 	const onClick = (id: MediaData['id']) => {
 		if (!@audio) return;
