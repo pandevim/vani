@@ -14,10 +14,10 @@ export component MediaItem(props: { item: MediaData }) {
 	const store = context.get();
 
 	effect(() => {
-		if (
-			store.currentMediaId && store.currentMediaId !== @item.id && @item.status === 'playing'
-		) {
-			@audio?.pause();
+		if (!@audio && !store.currentMediaId) return;
+
+		if (store.currentMediaId !== @item.id && @item.status === 'playing') {
+			@audio.pause();
 		}
 	});
 
