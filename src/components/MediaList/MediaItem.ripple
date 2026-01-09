@@ -9,7 +9,6 @@ export component MediaItem(props: { item: MediaData }) {
 	const [item] = trackSplit(props, ['item']);
 
 	let audio = track<HTMLAudioElement>();
-	const progressWidth = track(() => getProgressWidth(@item.duration, @item.currentTime ?? 0));
 
 	const store = context.get();
 
@@ -25,7 +24,6 @@ export component MediaItem(props: { item: MediaData }) {
 		if (!@audio) return;
 
 		store.currentMediaId = id;
-		@item.progressWidth = @progressWidth;
 
 		if (@item.status === 'playing') {
 			@audio.pause();
@@ -35,6 +33,10 @@ export component MediaItem(props: { item: MediaData }) {
 			@audio.play();
 		}
 	};
+
+	effect(() => {
+		@item.progressWidth = getProgressWidth(@item.duration, @item.currentTime ?? 0);
+	});
 
 	<div>
 		<audio
@@ -67,7 +69,7 @@ export component MediaItem(props: { item: MediaData }) {
 						<div
 							class="h-1 w-0 bg-green-500 rounded-full"
 							style={{
-								width: @progressWidth,
+								width: @item.progressWidth,
 							}}
 						/>
 					</div>
