@@ -21,6 +21,8 @@ export component MiniPlayer() {
 		);
 	});
 
+	const onClick = () => {};
+
 	if (has(@currentMedia, 'id')) {
 		<div
 			{ref (node) => {
@@ -53,8 +55,13 @@ export component MiniPlayer() {
 					</div>
 				</div>
 				<div class="flex items-center px-2">
-					<button class="text-white">
-						if (@currentMedia.status === 'loading') {
+					<button class="text-white" {onClick}>
+						if (
+							isUndefined(@currentMedia.status) ||
+								@currentMedia.status === 'stopped' ||
+								@currentMedia.status === 'loading' ||
+								@currentMedia.status === 'paused'
+						) {
 							<svg
 								xmlns="http://www.w3.org/2000/svg"
 								viewBox="0 0 24 24"
@@ -62,24 +69,6 @@ export component MiniPlayer() {
 								class={cn('size-6', {
 									'opacity-50': @currentMedia.status === 'loading',
 								})}
-							>
-								<path
-									fill-rule="evenodd"
-									d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
-									clip-rule="evenodd"
-								/>
-							</svg>
-						}
-						if (
-							isUndefined(@currentMedia.status) ||
-								@currentMedia.status === 'stopped' ||
-								@currentMedia.status === 'paused'
-						) {
-							<svg
-								xmlns="http://www.w3.org/2000/svg"
-								viewBox="0 0 24 24"
-								fill="currentColor"
-								class="size-6"
 							>
 								<path
 									fill-rule="evenodd"

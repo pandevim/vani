@@ -14,7 +14,7 @@ export component MediaItem(props: { item: MediaData }) {
 	const store = context.get();
 
 	effect(() => {
-		if (!@audio && !store.currentMediaId) return;
+		if (!@audio || !store.currentMediaId) return;
 
 		if (store.currentMediaId !== @item.id && @item.status === 'playing') {
 			@audio.pause();
@@ -50,7 +50,11 @@ export component MediaItem(props: { item: MediaData }) {
 			}}
 			onPlay={() => (@item.status = 'playing')}
 			onPlaying={() => (@item.status = 'playing')}
-			onPause={() => (@item.status = 'paused')}
+			onPause={() => {
+				if (@item.status !== 'stopped') {
+					@item.status = 'paused';
+				}
+			}}
 			onWaiting={() => (@item.status = 'loading')}
 		/>
 		<div class="flex justify-between items-center">
