@@ -1,20 +1,28 @@
-import type { Props } from 'ripple';
 import type { MediaData } from '../../types.ts';
 import { trackSplit, track } from 'ripple';
-import { isNumber } from 'lodash';
+import { isNumber, isUndefined } from 'lodash';
 import { cn } from '../../utils/cn';
+import { context } from '../../context.ripple';
 
 export component MediaItem(props: { item: MediaData }) {
 	const [item] = trackSplit(props, ['item']);
-	let audio = track<HTMLAudioElement>();
-	const status = track(() => @item.status ?? 'uninitialized');
 
-	const onClick = () => {
+	let audio = track<HTMLAudioElement>();
+	const progressWidth = track(() => getProgressWidth(@item.duration, @item.currentTime ?? 0));
+
+	const store = context.get();
+
+	const onClick = (id: MediaData['id']) => {
 		if (!@audio) return;
 
-		if (@status === 'playing') {
+		store.currentMediaId = id;
+		@item.progressWidth = progressWidth;
+
+		if (@item.status === 'playing') {
 			@audio.pause();
-		} else if (@status === 'uninitialized' || @status === 'paused' || @status === 'stopped') {
+		} else if (
+			isUndefined(@item.status) || @item.status === 'paused' || @item.status === 'stopped'
+		) {
 			@audio.play();
 		}
 	};
@@ -28,13 +36,13 @@ export component MediaItem(props: { item: MediaData }) {
 			src={@item.audioUrl}
 			onTimeUpdate={(e) => (@item.currentTime = (e.target as HTMLAudioElement).currentTime)}
 			onEnded={() => {
-				@status = 'stopped';
+				@item.status = 'stopped';
 				@item.currentTime = 0;
 			}}
-			onPlay={() => (@status = 'playing')}
-			onPlaying={() => (@status = 'playing')}
-			onPause={() => (@status = 'paused')}
-			onWaiting={() => (@status = 'loading')}
+			onPlay={() => (@item.status = 'playing')}
+			onPlaying={() => (@item.status = 'playing')}
+			onPause={() => (@item.status = 'paused')}
+			onWaiting={() => (@item.status = 'loading')}
 		/>
 		<div class="flex justify-between items-center">
 			<div class="flex justify-start items-center gap-2">
@@ -46,7 +54,7 @@ export component MediaItem(props: { item: MediaData }) {
 						<div
 							class="h-1 w-0 bg-green-500 rounded-full"
 							style={{
-								width: getProgressWidth(@item.duration, @item.currentTime ?? 0),
+								width: @progressWidth,
 							}}
 						/>
 					</div>
@@ -73,8 +81,8 @@ export component MediaItem(props: { item: MediaData }) {
 					</button>
 				}
 
-				<button class="text-white relative" {onClick}>
-					if (@status === 'loading') {
+				<button class="text-white relative" onClick={() => onClick(@item.id)}>
+					if (@item.status === 'loading') {
 						<svg
 							id="loading-ring"
 							class="w-8 h-8 text-neutral-tertiary animate-spin fill-brand absolute"
@@ -93,15 +101,15 @@ export component MediaItem(props: { item: MediaData }) {
 						</svg>
 					}
 					if (
-						@status === 'uninitialized' || @status === 'stopped' ||
-							@status === 'loading' ||
-							@status === 'paused'
+						isUndefined(@item.status) || @item.status === 'stopped' ||
+							@item.status === 'loading' ||
+							@item.status === 'paused'
 					) {
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 24 24"
 							fill="currentColor"
-							class={cn('size-8', { 'opacity-50': @status === 'loading' })}
+							class={cn('size-8', { 'opacity-50': @item.status === 'loading' })}
 						>
 							<path
 								id="icon-path"
@@ -111,7 +119,7 @@ export component MediaItem(props: { item: MediaData }) {
 							/>
 						</svg>
 					}
-					if (@status === 'playing') {
+					if (@item.status === 'playing') {
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							viewBox="0 0 24 24"

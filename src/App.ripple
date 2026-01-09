@@ -2,6 +2,7 @@ import { PlaylistHeader } from './components/PlaylistHeader.ripple';
 import { MediaList } from './components/MediaList/MediaList.ripple';
 import { MiniPlayer } from './components/MiniPlayer.ripple';
 import { context, initialize } from './context.ripple';
+import { effect } from 'ripple';
 
 export component App() {
 	initialize();

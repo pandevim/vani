@@ -1,7 +1,10 @@
 import { MediaItem } from './MediaItem.ripple';
 import { context } from '../../context.ripple';
+import { track, effect } from 'ripple';
+import type { MediaData } from '../../types.ts';
 
 export component MediaList() {
+	const currentMediaId = track<MediaData['id']>();
 	const store = context.get();
 
 	<div>
@@ -29,7 +32,7 @@ export component MediaList() {
 						<span class="text-sm text-gray-400 font-medium">{item.artist}</span>
 					</div>
 				</div>
-				<MediaItem {item} />
+				<MediaItem {item} {currentMediaId} />
 			</div>
 
 			<div class="border-b border-gray-400/20 w-[95%] mx-auto last:mb-48" />

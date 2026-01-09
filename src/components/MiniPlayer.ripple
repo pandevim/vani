@@ -1,13 +1,15 @@
 import { track, effect } from 'ripple';
-import type { AppStore } from '../types';
 import { rgbToCss } from '../utils/rgbToCss';
 import { mixWithGray } from '../utils/mixWithGray';
-import { has, isNil } from 'lodash';
+import { has, isUndefined } from 'lodash';
 import { context } from '../context.ripple';
+import { cn } from '../utils/cn';
 
 export component MiniPlayer() {
 	const store = context.get();
-	const media = store.@currentMedia;
+	const currentMedia = track(
+		() => store.mediaList.find((item) => item.id === store.currentMediaId) ?? null,
+	);
 
 	let miniPlayer = track<HTMLElement>();
 
@@ -19,11 +21,7 @@ export component MiniPlayer() {
 		);
 	});
 
-	if (isNil(@media)) {
-		<div />
-	}
-
-	if (has(@media, 'id')) {
+	if (has(@currentMedia, 'id')) {
 		<div
 			{ref (node) => {
 				@miniPlayer = node;
@@ -50,30 +48,72 @@ export component MiniPlayer() {
 						</svg>
 					</div>
 					<div class="flex-1 flex flex-col">
-						<span class="text-md font-semibold">{@media.title}</span>
-						<span class="text-sm font-medium">{@media.artist}</span>
+						<span class="text-md font-semibold">{@currentMedia.title}</span>
+						<span class="text-sm font-medium">{@currentMedia.artist}</span>
 					</div>
 				</div>
 				<div class="flex items-center px-2">
-					<button class="text-white" data-state="play">
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							viewBox="0 0 24 24"
-							fill="currentColor"
-							class="size-6"
-						>
-							<path
-								fill-rule="evenodd"
-								d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
-								clip-rule="evenodd"
-							/>
-						</svg>
+					<button class="text-white">
+						if (@currentMedia.status === 'loading') {
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+								fill="text-gray"
+								class={cn('size-6', {
+									'opacity-20': @currentMedia.status === 'loading',
+								})}
+							>
+								<path
+									fill-rule="evenodd"
+									d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						}
+						if (
+							isUndefined(@currentMedia.status) ||
+								@currentMedia.status === 'stopped' ||
+								@currentMedia.status === 'paused'
+						) {
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+								fill="currentColor"
+								class="size-6"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M4.5 5.653c0-1.427 1.529-2.33 2.779-1.643l11.54 6.347c1.295.712 1.295 2.573 0 3.286L7.28 19.99c-1.25.687-2.779-.217-2.779-1.643V5.653Z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						}
+
+						if (@currentMedia.status === 'playing') {
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+								fill="currentColor"
+								class="size-6"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M6.75 5.25a.75.75 0 0 1 .75-.75H9a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H7.5a.75.75 0 0 1-.75-.75V5.25Zm7.5 0A.75.75 0 0 1 15 4.5h1.5a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75H15a.75.75 0 0 1-.75-.75V5.25Z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						}
 					</button>
 				</div>
 			</div>
 
 			<div class="h-[2px] bg-white/20 mx-2">
-				<div class="h-[2px] bg-white/50 rounded-full w-[30%]" />
+				<div
+					class="h-[2px] bg-white/50 rounded-full"
+					style={{
+						width: @currentMedia.progressWidth,
+					}}
+				/>
 			</div>
 		</div>
 	}

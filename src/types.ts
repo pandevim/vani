@@ -7,12 +7,13 @@ export interface MediaData {
 	audioUrl: string;
 
 	currentTime?: number;
-	status?: 'playing' | 'paused' | 'stopped' | 'loading';
+	status?: 'playing' | 'paused' | 'stopped' | 'loading' | 'uninitialized';
+	progressWidth?: string;
 }
 
 export interface AppStore {
 	mediaList: MediaData[];
 	isLoaded: boolean;
-	currentMedia: MediaData | null;
+	currentMediaId: MediaData['id'] | null;
 	themeColor: [number, number, number];
 }
