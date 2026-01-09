@@ -16,7 +16,7 @@ export component MediaItem(props: { item: MediaData }) {
 		if (!@audio) return;
 
 		store.currentMediaId = id;
-		@item.progressWidth = progressWidth;
+		@item.progressWidth = @progressWidth;
 
 		if (@item.status === 'playing') {
 			@audio.pause();
@@ -62,7 +62,15 @@ export component MediaItem(props: { item: MediaData }) {
 			</div>
 			<div class="flex-1 flex justify-end gap-2 items-center">
 				if (isNumber(@item.currentTime)) {
-					<button class="text-gray-400/50">
+					<button
+						class="text-gray-400/50"
+						onClick={() => {
+							@audio.pause();
+							@audio.currentTime = 0;
+							@item.currentTime = 0;
+							@item.status = 'stopped';
+						}}
+					>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"

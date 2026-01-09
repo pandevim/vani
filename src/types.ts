@@ -14,6 +14,6 @@ export interface MediaData {
 export interface AppStore {
 	mediaList: MediaData[];
 	isLoaded: boolean;
-	currentMediaId: MediaData['id'] | null;
+	currentMediaId: string | null;
 	themeColor: [number, number, number];
 }
