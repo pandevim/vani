@@ -1,8 +1,8 @@
 import { MediaItem } from './MediaItem.ripple';
-import { context } from '../../context.ripple';
+import { StoreContext } from '../../StoreContext.ripple';
 
 export component MediaList() {
-	const store = context.get();
+	const store = StoreContext.get();
 
 	<div>
 		for (const item of store.@mediaList) {

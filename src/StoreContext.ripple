@@ -3,7 +3,7 @@ import type { AppStore } from './types';
 import ColorThief from 'colorthief';
 // import data from './data/tracks.json';
 
-export const context = new Context<AppStore>();
+export const StoreContext = new Context<AppStore>();
 
 // const STORAGE_KEY = 'app_tracks_cache';
 
@@ -129,15 +129,14 @@ export async function initialize() {
 		themeColor: #[23, 23, 23],
 	};
 
-	context.set<AppStore>(store);
+	StoreContext.set<AppStore>(store);
 
 	const colorThief = new ColorThief();
 	const img = new Image();
 	img.crossOrigin = 'Anonymous';
+	img.src = '/images/osho-banner.jpg';
 	img.onload = () => {
 		const palette: [number, number, number][] = colorThief.getPalette(img, 5);
 		store.themeColor = palette[1] || palette[0];
 	};
-
-	img.src = '/images/osho-banner.jpg';
 }

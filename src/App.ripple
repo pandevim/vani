@@ -1,12 +1,11 @@
 import { PlaylistHeader } from './components/PlaylistHeader.ripple';
 import { MediaList } from './components/MediaList/MediaList.ripple';
 import { MiniPlayer } from './components/MiniPlayer.ripple';
-import { context, initialize } from './context.ripple';
-import { effect } from 'ripple';
+import { StoreContext, initialize } from './StoreContext.ripple';
 
 export component App() {
 	initialize();
-	const store = context.get();
+	const store = StoreContext.get();
 
 	if (!store.@isLoaded) {
 		<p>{'Loading tracks...'}</p>

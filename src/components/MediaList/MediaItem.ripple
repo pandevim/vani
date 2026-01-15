@@ -2,7 +2,7 @@ import type { MediaData } from '../../types.ts';
 import { trackSplit, track } from 'ripple';
 import { isNumber, isUndefined } from 'lodash';
 import { cn } from '../../utils/cn';
-import { context } from '../../context.ripple';
+import { StoreContext } from '../../StoreContext.ripple';
 import { effect } from 'ripple';
 
 export component MediaItem(props: { item: MediaData }) {
@@ -10,7 +10,7 @@ export component MediaItem(props: { item: MediaData }) {
 
 	let audio = track<HTMLAudioElement>();
 
-	const store = context.get();
+	const store = StoreContext.get();
 
 	effect(() => {
 		if (!@audio || !store.currentMediaId) return;

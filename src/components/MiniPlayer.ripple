@@ -2,11 +2,11 @@ import { track, effect } from 'ripple';
 import { rgbToCss } from '../utils/rgbToCss';
 import { mixWithGray } from '../utils/mixWithGray';
 import { has, isUndefined } from 'lodash';
-import { context } from '../context.ripple';
+import { StoreContext } from '../StoreContext.ripple';
 import { cn } from '../utils/cn';
 
 export component MiniPlayer() {
-	const store = context.get();
+	const store = StoreContext.get();
 	const currentMedia = track(
 		() => store.mediaList.find((item) => item.id === store.currentMediaId) ?? null,
 	);
