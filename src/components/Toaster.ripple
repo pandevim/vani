@@ -1,0 +1,63 @@
+import { Portal, track, effect } from 'ripple';
+import { animate } from 'motion';
+import { createStore } from 'zustand/vanilla';
+
+interface ToasterStoreState {
+	messages: { id: number; text: string }[];
+}
+
+interface ToasterStoreActions {
+	addMessage: (message: { id: number; text: string }) => void;
+	removeMessage: (id: number) => void;
+}
+
+type ToasterStore = ToasterStoreState & ToasterStoreActions;
+
+const store = createStore<ToasterStore>(
+	(set) => ({
+		messages: [],
+		addMessage: (message) => set((state) => ({ messages: [...state.messages, message] })),
+		removeMessage: (id) => set(
+			(state) => ({ messages: state.messages.filter((msg) => msg.id !== id) }),
+		),
+	}),
+);
+
+export const toast = (text: string) => {
+	const id = Date.now();
+
+	store.getState().addMessage({ id, text });
+
+	setTimeout(() => {
+		store.getState().removeMessage(id);
+	}, 3000);
+};
+
+export component Toaster() {
+	let toasts = track(store.getState().messages);
+
+	effect(() => {
+		const unsubscribe = store.subscribe((state) => {
+			@toasts = state.messages;
+		});
+		return unsubscribe;
+	});
+
+	if (@toasts.length > 0) {
+		<Portal target={document.body}>
+			<div class="fixed bottom-4 bottom-0 left-0 right-0 flex flex-col gap-2 z-100">
+				for (const message of @toasts) {
+					<p
+						{ref (node) => {
+							if (!node) return;
+							animate(node, { opacity: [0, 1], y: [20, 0] }, { duration: 0.3 });
+						}}
+						class="m-2 rounded-md z-100 bg-white rounded-md p-4 shadow-lg text-xs text-gray-800 font-medium"
+					>
+						{message.text}
+					</p>
+				}
+			</div>
+		</Portal>
+	}
+}

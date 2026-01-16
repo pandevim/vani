@@ -4,6 +4,7 @@ import { mixWithGray } from '../utils/mixWithGray';
 import { StoreContext } from '../StoreContext.ripple';
 import { isUndefined, isNil } from 'lodash';
 import { cn } from '../utils/cn';
+import { toast } from './Toaster.ripple';
 
 export component PlaylistHeader() {
 	const store = StoreContext.get();
@@ -81,7 +82,7 @@ export component PlaylistHeader() {
 						/>
 					</svg>
 				</button>
-				<button class="text-gray-400">
+				<button class="text-gray-400" onClick={() => toast('Link copied to clipboard')}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"

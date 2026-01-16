@@ -1,0 +1,16 @@
+import { StoreContext } from '../StoreContext.ripple';
+import { has } from 'lodash';
+import { track } from 'ripple';
+
+export component WebsiteHead() {
+	const store = StoreContext.get();
+	const currentMedia = track(
+		() => store.mediaList.find((item) => item.id === store.currentMediaId) ?? null,
+	);
+
+	if (has(@currentMedia, 'id')) {
+		<head>
+			<title>{@currentMedia.title}</title>
+		</head>
+	}
+}
