@@ -22,6 +22,8 @@ export component MiniPlayer() {
 	});
 
 	const onClick = () => {
+		if (@currentMedia.status === 'loading') return;
+
 		if (@currentMedia.status === 'playing') {
 			@currentMedia.status = 'paused';
 			return;
