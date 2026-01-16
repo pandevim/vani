@@ -13,25 +13,29 @@ export component MediaItem(props: { item: MediaData }) {
 	const store = StoreContext.get();
 
 	effect(() => {
-		if (!@audio || !store.currentMediaId) return;
+		if (!@audio) return;
 
-		if (store.currentMediaId !== @item.id && @item.status === 'playing') {
+		if (store.currentMediaId !== @item.id) {
+			if (!@audio.paused) @audio.pause();
+			return;
+		}
+
+		if (@item.status === 'playing' && @audio.paused) {
+			@audio.play();
+		} else if (@item.status === 'paused' && !@audio.paused) {
 			@audio.pause();
 		}
 	});
 
 	const onClick = (id: MediaData['id']) => {
-		if (!@audio) return;
-
 		store.currentMediaId = id;
 
 		if (@item.status === 'playing') {
-			@audio.pause();
-		} else if (
-			isUndefined(@item.status) || @item.status === 'paused' || @item.status === 'stopped'
-		) {
-			@audio.play();
+			@item.status = 'paused';
+			return;
 		}
+
+		@item.status = 'playing';
 	};
 
 	effect(() => {
@@ -47,17 +51,21 @@ export component MediaItem(props: { item: MediaData }) {
 			src={@item.audioUrl}
 			onTimeUpdate={(e) => (@item.currentTime = (e.target as HTMLAudioElement).currentTime)}
 			onEnded={() => {
-				@item.status = 'stopped';
+				@item.status = 'paused';
 				@item.currentTime = 0;
 			}}
-			onPlay={() => (@item.status = 'playing')}
-			onPlaying={() => (@item.status = 'playing')}
-			onPause={() => {
-				if (@item.status !== 'stopped') {
-					@item.status = 'paused';
-				}
+			onPlay={() => {
+				if (@item.status !== 'playing') @item.status = 'playing';
 			}}
-			onWaiting={() => (@item.status = 'loading')}
+			onPlaying={() => {
+				if (@item.status !== 'playing') @item.status = 'playing';
+			}}
+			onPause={() => {
+				if (@item.status !== 'paused') @item.status = 'paused';
+			}}
+			onWaiting={() => {
+				if (@item.status !== 'loading') @item.status = 'loading';
+			}}
 		/>
 		<div class="flex justify-between items-center">
 			<div class="flex justify-start items-center gap-2">
@@ -80,10 +88,8 @@ export component MediaItem(props: { item: MediaData }) {
 					<button
 						class="text-gray-400/50"
 						onClick={() => {
-							@audio.pause();
-							@audio.currentTime = 0;
+							@item.status = 'paused';
 							@item.currentTime = 0;
-							@item.status = 'stopped';
 						}}
 					>
 						<svg
@@ -124,8 +130,7 @@ export component MediaItem(props: { item: MediaData }) {
 						</svg>
 					}
 					if (
-						isUndefined(@item.status) || @item.status === 'stopped' ||
-							@item.status === 'loading' ||
+						isUndefined(@item.status) || @item.status === 'loading' ||
 							@item.status === 'paused'
 					) {
 						<svg

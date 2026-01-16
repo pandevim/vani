@@ -26,7 +26,14 @@ export component PlaylistHeader() {
             `;
 	});
 
-	const onClick = () => {};
+	const onClick = () => {
+		if (@currentMedia.status === 'playing') {
+			@currentMedia.status = 'paused';
+			return;
+		}
+
+		@currentMedia.status = 'playing';
+	};
 
 	<div
 		{ref (node) => {
@@ -93,7 +100,6 @@ export component PlaylistHeader() {
 				<button class="text-green-500" {onClick}>
 					if (
 						!@currentMedia || isUndefined(@currentMedia.status) ||
-							@currentMedia.status === 'stopped' ||
 							@currentMedia.status === 'loading' ||
 							@currentMedia.status === 'paused'
 					) {

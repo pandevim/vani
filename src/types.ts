@@ -7,7 +7,7 @@ export interface MediaData {
 	audioUrl: string;
 
 	currentTime?: number;
-	status?: 'playing' | 'paused' | 'stopped' | 'loading' | 'uninitialized';
+	status?: 'playing' | 'paused' | 'loading' | 'uninitialized';
 	progressWidth?: string;
 }
 

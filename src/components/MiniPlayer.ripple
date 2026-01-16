@@ -21,7 +21,14 @@ export component MiniPlayer() {
 		);
 	});
 
-	const onClick = () => {};
+	const onClick = () => {
+		if (@currentMedia.status === 'playing') {
+			@currentMedia.status = 'paused';
+			return;
+		}
+
+		@currentMedia.status = 'playing';
+	};
 
 	if (has(@currentMedia, 'id')) {
 		<div
@@ -58,7 +65,6 @@ export component MiniPlayer() {
 					<button class="text-white" {onClick}>
 						if (
 							isUndefined(@currentMedia.status) ||
-								@currentMedia.status === 'stopped' ||
 								@currentMedia.status === 'loading' ||
 								@currentMedia.status === 'paused'
 						) {
