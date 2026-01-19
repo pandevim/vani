@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"target": "ESNext",
 		"module": "ESNext",
-		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"lib": ["ES2022", "DOM", "DOM.Iterable", "WebWorker"],
 		"allowSyntheticDefaultImports": true,
 		"esModuleInterop": true,
 		"moduleResolution": "bundler",
@@ -10,6 +10,7 @@
 		"jsxImportSource": "ripple",
 		"noEmit": true,
 		"isolatedModules": true,
-		"plugins": [{ "name": "@ripple-ts/typescript-plugin" }]
+		"plugins": [{ "name": "@ripple-ts/typescript-plugin" }],
+		"types": ["vite/client", "vite-plugin-pwa/client"]
 	}
 }

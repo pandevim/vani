@@ -1,0 +1,74 @@
+import { track, effect, untrack } from 'ripple';
+import { rgbToCss } from '../utils/rgbToCss';
+import { mixWithGray } from '../utils/mixWithGray';
+import { has } from 'lodash';
+import { StoreContext } from '../StoreContext.ripple';
+
+export component PlayerScreen() {
+	const store = StoreContext.get();
+	const currentMedia = track(
+		() => store.mediaList.find((item) => item.id === store.currentMediaId) ?? null,
+	);
+
+	let bg = track<HTMLElement>();
+
+	effect(() => {
+		if (!@bg || !store.@themeColor) return;
+		@bg.style.backgroundImage =
+			`
+                linear-gradient(
+                    180deg,
+                    ${rgbToCss(
+				mixWithGray(store.@themeColor),
+			)} 0%,
+                    #171717ff 100%
+                )
+            `;
+	});
+
+	effect(() => {
+		if (store.@isPlayerScreenOpen) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = 'auto';
+		}
+	});
+
+	const onClickClose = () => {
+		store.isPlayerScreenOpen = false;
+	};
+
+	if (has(@currentMedia, 'id') && store.@isPlayerScreenOpen) {
+		<div
+			{ref (node) => {
+				@bg = node;
+				return () => (@bg = undefined);
+			}}
+			class="text-white z-50 h-full w-full fixed top-0 left-0 flex flex-col p-4 pt-8"
+		>
+			<div class="flex justify-between items-center gap-2 font-semibold text-sm">
+				<button onClick={onClickClose}>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="size-6"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="m19.5 8.25-7.5 7.5-7.5-7.5"
+						/>
+					</svg>
+				</button>
+				<div class="flex flex-1 justify-center">
+					<span>{'Osho Maha Geeta 01-91'}</span>
+				</div>
+				<button class="opacity-0">{'opt'}</button>
+			</div>
+			<div>{'Cover'}</div>
+		</div>
+	}
+}

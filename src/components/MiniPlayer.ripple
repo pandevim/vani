@@ -32,13 +32,18 @@ export component MiniPlayer() {
 		@currentMedia.status = 'playing';
 	};
 
-	if (has(@currentMedia, 'id')) {
+	const openPlayerScreen = () => {
+		store.isPlayerScreenOpen = true;
+	};
+
+	if (has(@currentMedia, 'id') && !store.@isPlayerScreenOpen) {
 		<div
 			{ref (node) => {
 				@miniPlayer = node;
 				return () => (@miniPlayer = undefined);
 			}}
 			class="m-2 fixed bottom-0 left-0 right-0 rounded-md text-white z-50"
+			onClick={openPlayerScreen}
 		>
 			<div class="flex justify-between items-center p-2">
 				<div class="flex justify-start items-center gap-2">

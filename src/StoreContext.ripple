@@ -12,6 +12,7 @@ const DEFAULT_STATE: AppStore = {
 	isLoaded: false,
 	currentMediaId: null,
 	themeColor: [23, 23, 23],
+	isPlayerScreenOpen: false,
 };
 
 export const StoreContext = new Context(DEFAULT_STATE);

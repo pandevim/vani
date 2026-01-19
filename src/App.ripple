@@ -4,6 +4,7 @@ import { MiniPlayer } from './components/MiniPlayer.ripple';
 import { StoreContext, createStore } from './StoreContext.ripple';
 import { Toaster } from './components/Toaster.ripple';
 import { WebsiteHead } from './components/WebsiteHead.ripple';
+import { PlayerScreen } from './components/PlayerScreen.ripple';
 
 export component App() {
 	createStore();
@@ -22,6 +23,7 @@ export component App() {
 			<WebsiteHead />
 			<PlaylistHeader />
 			<MediaList />
+			<PlayerScreen />
 			<MiniPlayer />
 			<Toaster />
 		</div>

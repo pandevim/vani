@@ -16,4 +16,5 @@ export interface AppStore {
 	isLoaded: boolean;
 	currentMediaId: string | null;
 	themeColor: [number, number, number];
+	isPlayerScreenOpen: boolean;
 }
