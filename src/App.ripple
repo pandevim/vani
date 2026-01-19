@@ -13,6 +13,10 @@ export component App() {
 		<p>{'Loading media...'}</p>
 	}
 
+	<head>
+		<title>{'Vāṇī'}</title>
+	</head>
+
 	if (store.@isLoaded) {
 		<div class="min-h-screen">
 			<WebsiteHead />

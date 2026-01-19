@@ -10,7 +10,7 @@ export component WebsiteHead() {
 
 	if (has(@currentMedia, 'id')) {
 		<head>
-			<title>{@currentMedia.title}</title>
+			<title>{`Vāṇī - ${@currentMedia.title}`}</title>
 		</head>
 	}
 }

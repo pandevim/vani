@@ -38,6 +38,18 @@ export component PlaylistHeader() {
 		@currentMedia.status = 'playing';
 	};
 
+	const onClickShare = () => {
+		navigator.clipboard.writeText(window.location.href);
+		toast('Link copied to clipboard');
+	};
+
+	const onClickDownload = () => {
+		navigator.clipboard.writeText(
+			'https://drive.google.com/drive/folders/1wwp0GFsbnPgfNL7te8oirYcncIv-VTui?usp=sharing',
+		);
+		toast('Link copied to clipboard');
+	};
+
 	<div
 		{ref (node) => {
 			@bg = node;
@@ -66,14 +78,14 @@ export component PlaylistHeader() {
 
 		<div class="flex justify-between items-center px-4">
 			<div class="flex justify-start gap-4">
-				<button class="text-gray-400">
+				<button class="text-gray-400" onClick={onClickDownload}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
 						viewBox="0 0 24 24"
 						stroke-width="1.5"
 						stroke="currentColor"
-						class="size-6"
+						class="size-7"
 					>
 						<path
 							stroke-linecap="round"
@@ -82,7 +94,7 @@ export component PlaylistHeader() {
 						/>
 					</svg>
 				</button>
-				<button class="text-gray-400" onClick={() => toast('Link copied to clipboard')}>
+				<button class="text-gray-400" onClick={onClickShare}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						fill="none"
