@@ -21,7 +21,9 @@ export component MiniPlayer() {
 		);
 	});
 
-	const onClick = () => {
+	const onClickPlayPause = (e) => {
+		e.stopPropagation();
+
 		if (@currentMedia.status === 'loading') return;
 
 		if (@currentMedia.status === 'playing') {
@@ -69,7 +71,12 @@ export component MiniPlayer() {
 					</div>
 				</div>
 				<div class="flex items-center px-2">
-					<button class="text-white" {onClick}>
+					<button
+						class="text-white"
+						onClick={{
+							handleEvent: onClickPlayPause,
+						}}
+					>
 						if (
 							isUndefined(@currentMedia.status) ||
 								@currentMedia.status === 'loading' ||

@@ -3,6 +3,8 @@ import { rgbToCss } from '../utils/rgbToCss';
 import { mixWithGray } from '../utils/mixWithGray';
 import { has } from 'lodash';
 import { StoreContext } from '../StoreContext.ripple';
+import { getElapsedTime } from '../utils/getElapsedTime';
+import { getTimeLeft } from '../utils/getTimeLeft';
 
 export component PlayerScreen() {
 	const store = StoreContext.get();
@@ -44,7 +46,7 @@ export component PlayerScreen() {
 				@bg = node;
 				return () => (@bg = undefined);
 			}}
-			class="text-white z-50 h-full w-full fixed top-0 left-0 flex flex-col p-4 pt-8"
+			class="text-white z-50 h-full w-full fixed top-0 left-0 flex flex-col p-4 pt-8 gap-8"
 		>
 			<div class="flex justify-between items-center gap-2 font-semibold text-sm">
 				<button onClick={onClickClose}>
@@ -68,7 +70,42 @@ export component PlayerScreen() {
 				</div>
 				<button class="opacity-0">{'opt'}</button>
 			</div>
-			<div>{'Cover'}</div>
+			<div
+				class="text-gray-400 p-4 rounded-md bg-gray-800 flex items-center justify-center min-h-[400px]"
+			>
+				<svg
+					xmlns="http://www.w3.org/2000/svg"
+					viewBox="0 0 24 24"
+					fill="currentColor"
+					class="size-4"
+				>
+					<path
+						fill-rule="evenodd"
+						d="M19.952 1.651a.75.75 0 0 1 .298.599V16.303a3 3 0 0 1-2.176 2.884l-1.32.377a2.553 2.553 0 1 1-1.403-4.909l2.311-.66a1.5 1.5 0 0 0 1.088-1.442V6.994l-9 2.572v9.737a3 3 0 0 1-2.176 2.884l-1.32.377a2.553 2.553 0 1 1-1.402-4.909l2.31-.66a1.5 1.5 0 0 0 1.088-1.442V5.25a.75.75 0 0 1 .544-.721l10.5-3a.75.75 0 0 1 .658.122Z"
+						clip-rule="evenodd"
+					/>
+				</svg>
+			</div>
+			<div class="flex flex-col">
+				<span class="text-lg font-semibold">{@currentMedia.title}</span>
+				<span class="text-sm font-medium">{@currentMedia.artist}</span>
+			</div>
+			<div>
+				<div class="h-[2px] bg-white/20">
+					<div
+						class="h-[2px] bg-white/50 rounded-full"
+						style={{
+							width: @currentMedia.progressWidth,
+						}}
+					/>
+				</div>
+				<div class="flex justify-between text-sm mt-2 text-gray-400">
+					<span>{getElapsedTime(@currentMedia.currentTime ?? 0)}</span>
+					<span>
+						{getTimeLeft(@currentMedia.duration, @currentMedia.currentTime ?? 0)}
+					</span>
+				</div>
+			</div>
 		</div>
 	}
 }

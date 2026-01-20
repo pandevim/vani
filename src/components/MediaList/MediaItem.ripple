@@ -4,6 +4,8 @@ import { isNumber, isUndefined } from 'lodash';
 import { cn } from '../../utils/cn';
 import { StoreContext } from '../../StoreContext.ripple';
 import { effect } from 'ripple';
+import { getTimeLeftText } from '../../utils/getTimeLeftText';
+import { getProgressWidth } from '../../utils/getProgressWidth';
 
 export component MediaItem(props: { item: MediaData }) {
 	const [item] = trackSplit(props, ['item']);
@@ -71,18 +73,16 @@ export component MediaItem(props: { item: MediaData }) {
 		<div class="flex justify-between items-center">
 			<div class="flex justify-start items-center gap-2">
 				<span id="time-left" class="text-xs text-white font-semibold">
-					{getTimeLeft(@item.duration, @item.currentTime ?? 0)}
+					{getTimeLeftText(@item.duration, @item.currentTime ?? 0)}
 				</span>
-				if (@item.currentTime) {
-					<div class="w-24 h-1 bg-gray-400/20 rounded-full">
-						<div
-							class="h-1 w-0 bg-green-500 rounded-full"
-							style={{
-								width: @item.progressWidth,
-							}}
-						/>
-					</div>
-				}
+				<div class="w-24 h-1 bg-gray-400/20 rounded-full">
+					<div
+						class="h-1 w-0 bg-green-500 rounded-full"
+						style={{
+							width: @item.progressWidth,
+						}}
+					/>
+				</div>
 			</div>
 			<div class="flex-1 flex justify-end gap-2 items-center">
 				if (isNumber(@item.currentTime)) {
@@ -167,34 +167,3 @@ export component MediaItem(props: { item: MediaData }) {
 		</div>
 	</div>
 }
-
-const getTimeLeft = (duration: number, currentTime: number): string => {
-	if (!duration || duration <= 0) return 'Loading...';
-
-	const timeLeft = Math.max(0, duration - currentTime);
-
-	if (timeLeft < 60 && timeLeft > 0) {
-		return `${Math.floor(timeLeft)}s left`;
-	}
-
-	if (timeLeft === 0) return 'Finished';
-
-	const hours = Math.floor(timeLeft / 3600);
-	const minutes = Math.floor((timeLeft % 3600) / 60);
-
-	const hourDisplay =
-		hours > 0 ? `${hours}h ` : '';
-
-	const minuteDisplay = `${minutes}m`;
-	const suffixDisplay =
-		currentTime > 0 ? ' left' : '';
-
-	return `${hourDisplay}${minuteDisplay}${suffixDisplay}`;
-};
-
-const getProgressWidth = (duration: number, currentTime: number): string => {
-	if (!duration || duration <= 0) return '0%';
-
-	const progress = (currentTime / duration) * 100;
-	return `${Math.min(progress, 100)}%`;
-};
