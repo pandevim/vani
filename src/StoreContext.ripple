@@ -38,6 +38,7 @@ export async function createStore() {
 	// 1. Prepare raw data
 	initialState.mediaList = mediaList;
 	initialState.isLoaded = true;
+	initialState.isPlayerScreenOpen = false;
 
 	// 2. Make Deeply Reactive
 	// This recursively converts all Arrays -> TrackedArray and Objects -> TrackedObject
