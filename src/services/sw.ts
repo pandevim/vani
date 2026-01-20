@@ -1,6 +1,11 @@
+import { precacheAndRoute } from 'workbox-precaching';
 import { provideThumbnail } from './shared';
 
-const sw = self as unknown as ServiceWorkerGlobalScope;
+declare let self: ServiceWorkerGlobalScope;
+
+precacheAndRoute(self.__WB_MANIFEST);
+
+const sw = self;
 
 class SWProviderAdapter {
 	sendMessage = (message: any) => {
