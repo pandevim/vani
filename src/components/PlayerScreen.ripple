@@ -1,10 +1,12 @@
-import { track, effect, untrack } from 'ripple';
+import { track, effect } from 'ripple';
 import { rgbToCss } from '../utils/rgbToCss';
 import { mixWithGray } from '../utils/mixWithGray';
-import { has } from 'lodash';
+import { has, isUndefined } from 'lodash';
 import { StoreContext } from '../StoreContext.ripple';
 import { getElapsedTime } from '../utils/getElapsedTime';
 import { getTimeLeft } from '../utils/getTimeLeft';
+import { cn } from '../utils/cn';
+import { animate } from 'motion';
 
 export component PlayerScreen() {
 	const store = StoreContext.get();
@@ -36,18 +38,51 @@ export component PlayerScreen() {
 		}
 	});
 
-	const onClickClose = () => {
+	const onClickClose = async () => {
+		if (@bg) {
+			await animate(@bg, { y: [0, 100], opacity: [1, 0] }, {
+				duration: 0.2,
+				ease: 'backIn',
+			}).finished;
+		}
 		store.isPlayerScreenOpen = false;
+	};
+
+	const onClick = () => {
+		if (@currentMedia.status === 'loading') return;
+
+		if (@currentMedia.status === 'playing') {
+			@currentMedia.status = 'paused';
+			return;
+		}
+
+		@currentMedia.status = 'playing';
 	};
 
 	if (has(@currentMedia, 'id') && store.@isPlayerScreenOpen) {
 		<div
 			{ref (node) => {
+				if (!node) return;
+				animate(@node, { y: [100, 0], opacity: [0, 1] }, {
+					duration: 0.2,
+					ease: 'backOut',
+				});
 				@bg = node;
 				return () => (@bg = undefined);
 			}}
 			class="text-white z-50 h-full w-full fixed top-0 left-0 flex flex-col p-4 pt-8 gap-8"
 		>
+			// Moves from 100px down to natural position
+			// Grows slightly
+			// Fades in (creates the "emerge" effect)
+
+			// Moves up
+			// Fades in
+			// Grows slightly (The "Emerging" effect)
+
+			// Speed it up slightly for better responsiveness
+			// A custom bezier that feels like a spring/snap
+
 			<div class="flex justify-between items-center gap-2 font-semibold text-sm">
 				<button onClick={onClickClose}>
 					<svg
@@ -104,6 +139,110 @@ export component PlayerScreen() {
 					<span>
 						{getTimeLeft(@currentMedia.duration, @currentMedia.currentTime ?? 0)}
 					</span>
+				</div>
+				<div class="flex justify-between items-center text-white py-4">
+					<button>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="size-6"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"
+							/>
+						</svg>
+					</button>
+					<button>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="size-6"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3"
+							/>
+						</svg>
+					</button>
+					<button {onClick}>
+						if (
+							isUndefined(@currentMedia.status) ||
+								@currentMedia.status === 'loading' ||
+								@currentMedia.status === 'paused'
+						) {
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+								fill="currentColor"
+								class={cn('size-20', {
+									'opacity-50': @currentMedia.status === 'loading',
+								})}
+							>
+								<path
+									id="icon-path"
+									fill-rule="evenodd"
+									d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm14.024-.983a1.125 1.125 0 0 1 0 1.966l-5.603 3.113A1.125 1.125 0 0 1 9 15.113V8.887c0-.857.921-1.4 1.671-.983l5.603 3.113Z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						}
+
+						if (@currentMedia.status === 'playing') {
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								viewBox="0 0 24 24"
+								fill="currentColor"
+								class="size-20"
+							>
+								<path
+									fill-rule="evenodd"
+									d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12ZM9 8.25a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75h.75a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75H9Zm5.25 0a.75.75 0 0 0-.75.75v6c0 .414.336.75.75.75H15a.75.75 0 0 0 .75-.75V9a.75.75 0 0 0-.75-.75h-.75Z"
+									clip-rule="evenodd"
+								/>
+							</svg>
+						}
+					</button>
+					<button>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="size-6"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="m15 15 6-6m0 0-6-6m6 6H9a6 6 0 0 0 0 12h3"
+							/>
+						</svg>
+					</button>
+					<button>
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							fill="none"
+							viewBox="0 0 24 24"
+							stroke-width="1.5"
+							stroke="currentColor"
+							class="size-6"
+						>
+							<path
+								stroke-linecap="round"
+								stroke-linejoin="round"
+								d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+							/>
+						</svg>
+					</button>
 				</div>
 			</div>
 		</div>
