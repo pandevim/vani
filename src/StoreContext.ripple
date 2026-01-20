@@ -36,7 +36,9 @@ export async function createStore() {
 	}
 
 	// 1. Prepare raw data
-	initialState.mediaList = mediaList;
+	if (!initialState.mediaList || initialState.mediaList.length === 0) {
+		initialState.mediaList = mediaList;
+	}
 	initialState.isLoaded = true;
 	initialState.isPlayerScreenOpen = false;
 
