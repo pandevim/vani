@@ -59,6 +59,33 @@ export component PlayerScreen() {
 		@currentMedia.status = 'playing';
 	};
 
+	const onSeek = (e) => {
+		const rect = e.currentTarget.getBoundingClientRect();
+		// Calculate percentage based on click position
+		const percent = (e.clientX - rect.left) / rect.width;
+
+		if (@currentMedia.duration) {
+			@currentMedia.currentTime = @currentMedia.duration * percent;
+		}
+	};
+
+	const onSkipBack = () => {
+		if (@currentMedia.currentTime) {
+			// Go back 15s, but not below 0
+			@currentMedia.currentTime = Math.max(0, @currentMedia.currentTime - 15);
+		}
+	};
+
+	const onSkipForward = () => {
+		if (@currentMedia.currentTime && @currentMedia.duration) {
+			// Go forward 15s, but not past duration
+			@currentMedia.currentTime = Math.min(
+				@currentMedia.duration,
+				@currentMedia.currentTime + 15,
+			);
+		}
+	};
+
 	if (has(@currentMedia, 'id') && store.@isPlayerScreenOpen) {
 		<div
 			{ref (node) => {
@@ -72,17 +99,6 @@ export component PlayerScreen() {
 			}}
 			class="text-white z-50 h-full w-full fixed top-0 left-0 flex flex-col p-4 pt-8 gap-8"
 		>
-			// Moves from 100px down to natural position
-			// Grows slightly
-			// Fades in (creates the "emerge" effect)
-
-			// Moves up
-			// Fades in
-			// Grows slightly (The "Emerging" effect)
-
-			// Speed it up slightly for better responsiveness
-			// A custom bezier that feels like a spring/snap
-
 			<div class="flex justify-between items-center gap-2 font-semibold text-sm">
 				<button onClick={onClickClose}>
 					<svg
@@ -126,7 +142,7 @@ export component PlayerScreen() {
 				<span class="text-sm font-medium">{@currentMedia.artist}</span>
 			</div>
 			<div>
-				<div class="h-[2px] bg-white/20">
+				<div class="h-[2px] bg-white/20" onClick={onSeek}>
 					<div
 						class="h-[2px] bg-white/50 rounded-full"
 						style={{
@@ -157,7 +173,7 @@ export component PlayerScreen() {
 							/>
 						</svg>
 					</button>
-					<button>
+					<button onClick={onSkipBack}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"
@@ -211,7 +227,7 @@ export component PlayerScreen() {
 							</svg>
 						}
 					</button>
-					<button>
+					<button onClick={onSkipForward}>
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							fill="none"

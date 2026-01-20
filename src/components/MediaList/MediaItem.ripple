@@ -29,6 +29,18 @@ export component MediaItem(props: { item: MediaData }) {
 		}
 	});
 
+	effect(() => {
+		if (!@audio) return;
+
+		const time = @item.currentTime ?? 0;
+
+		// If the difference between state and actual audio time is significant (> 0.5s),
+		// it means a seek/skip happened manually.
+		if (Math.abs(@audio.currentTime - time) > 0.5) {
+			@audio.currentTime = time;
+		}
+	});
+
 	const onClick = (id: MediaData['id']) => {
 		if (@item.status === 'loading') return;
 		store.currentMediaId = id;
